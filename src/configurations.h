@@ -1,3 +1,5 @@
+#include "configurations_security.h"
+
 // Start of reserved configurations. Do not change if you dont know what you are doing
 enum entity_state {ON, OFF, ERROR, UNAVAILABLE};
 enum entity_type {SWITCH, LIGHT, EXFAN, FAN, AIRPURIFIER, WATERHEATER, PLUG, AIRCONDITIONER, PLANT};
@@ -17,20 +19,25 @@ struct HAConfigurations{
 };
 // End of reserved configurations
 
-
-// Start of user configurations. Change as instructed in the comments
-
+// NOTE: Create configurations_security.h with these lines:
+// Start of user security configurations. Change as instructed in the comments
 // Change to your WiFi credentials
-const char* ssid        = "WIFI SSID";
-const char* password    = "WIFI PASSWORD";
+// const char* ssid        = "...";
+// const char* password    = "...";
+// create a long lived access token and put it here. ref: https://www.home-assistant.io/docs/authentication/
+// const String ha_token   = "...";
+
 
 // url to HA server. Only http is supported for now!
-const String ha_server  = "http://192.168.2.138:8123";
-// create a long lived access token and put it here. ref: https://www.home-assistant.io/docs/authentication/
-const String ha_token   = "..";
+const String ha_server  = "http://192.168.1.88:8123";
 
 // GMT Offset in seconds. UK normal time is GMT, so GMT Offset is 0, for US (-5Hrs) is typically -18000, AU is typically (+8hrs) 28800
-int   gmtOffset_sec     = 19800;
+int   gmtOffset_sec     = -28800;
+
+// deep sleep configurations
+long SleepDuration   = 60; // Sleep time in minutes, aligned to the nearest minute boundary, so if 30 will always update at 00 or 30 past the hour
+int  WakeupHour      = 8;  // Wakeup after 06:00 to save battery power
+int  SleepHour       = 23; // Sleep  after 23:00 to save battery power
 
 /**
  *  Entities are shown in top two rows. Supported types are in entity_type and different icons are used for easy recognition
@@ -39,18 +46,8 @@ int   gmtOffset_sec     = 19800;
  *  User a short entity name so it can fit nicely in 160px width in 9px font. 
 **/
 HAEntities haEntities [] {
-    {"POND FILTER", "switch.pond_filter", SWITCH, ONOFF},
-    {"ROOF", "switch.tasmota_2", LIGHT, ONOFF},
-    {"FR. DOOR", "switch.tasmota_3", LIGHT, ONOFF},
-    {"BAR", "switch.exhaust_fan", EXFAN, ONOFF},
-    {"STAIRS2", "switch.stairs2", LIGHT, ONOFF},
-    {"STAIRS1", "switch.stairs_1_zigbee_switch_on_off", LIGHT, ONOFF},
-    {"M. BEDROOM", "fan.xiaomi_air_purifier_2s", AIRPURIFIER, ONOFF},
-    {"HEATER", "switch.water_heater_2", WATERHEATER, ONOFF},
-    {"FR. DOOR", "switch.tasmota_3", LIGHT, ONOFF},
-    {"BEDROOM UVC", "switch.uvc_bedroom_ac", SWITCH, ONOFF},
-    {"GARAGE", "switch.uvc_bedroom_ac", FAN, ONOFF},
-    {"M.BEDROOM", "switch.stairs_1_zigbee_switch_on_off", AIRCONDITIONER, ONOFF},
+    {"Plant 1", "sensor.plant_1_moisture", PLANT, VALUE},
+    {"Plant 2 Tall", "sensor.plant_2_tall_moisture", PLANT, VALUE},
 };
 
 /**
@@ -60,14 +57,7 @@ HAEntities haEntities [] {
  *  User a short entity name so it can fit nicely in 120px width in 9px font. 
 **/
 HAEntities haSensors[] {
-    {"M. BED", "binary_sensor.master_bedroom_door_sensor_ias_zone", DOOR, ONOFF},
-    {"STAIRS 2", "binary_sensor.stairs_2_motion_sensor_ias_zone", MOTION, ONOFF},
-    {"STAIRS 1", "binary_sensor.stairs_1_motion_sensor_ias_zone", MOTION, ONOFF},
-    {"BAR", "binary_sensor.bar_area_motion_sensor_ias_zone", MOTION, ONOFF},
-    {"KITCHEN", "binary_sensor.kitchen_motion_sensor_ias_zone", MOTION, ONOFF},
-    {"MAIN", "binary_sensor.main_door_sensor_ias_zone", DOOR, ONOFF},
-    {"KITCHEN", "binary_sensor.kitchen_door_sensor_ias_zone", DOOR, ONOFF},
-    {"KITCHEN", "binary_sensor.kitchen_door_sensor_ias_zone", DOOR, ONOFF}
+    {"Kitchen Door", "binary_sensor.lumi_lumi_sensor_magnet_aq2_1d3d0b07_on_off", DOOR, ONOFF},
 };
 
 /**
@@ -80,11 +70,5 @@ HAEntities haSensors[] {
  *  Or you can customize the code the way you see fit (advanced)
 **/
 HAEntities haFloatSensors[] {
-    {"TOTAL ENERGY TODAY", "sensor.energy_meter_floor_03_energy_today", ENERGYMETER, VALUE},
-    {"TOTAL ENERGY TODAY", "sensor.tasmota_energy_today", ENERGYMETER, VALUE},
-    {"TOTAL ENERGY TODAY", "sensor.energy_meter_floor_01_energy_today", ENERGYMETER, VALUE},
-    {"CURRENT POWER", "sensor.energy_meter_floor_03_energy_power", ENERGYMETERPWR, VALUE},
-    {"CURRENT POWER", "sensor.energy_meter_floor_02_energy_power", ENERGYMETERPWR, VALUE},
-    {"CURRENT POWER", "sensor.energy_meter_floor_01_energy_power", ENERGYMETERPWR, VALUE},
-    {"ROOM TEMP", "sensor.xiaomi_airpurifier_temp", TEMP, VALUE},
+    {"Outside", "weather.2875_home", TEMP, VALUE},
 };

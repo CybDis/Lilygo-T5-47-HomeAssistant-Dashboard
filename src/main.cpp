@@ -36,32 +36,32 @@
 #include "epd_drawing.h"
 
 // Icons for Home Assistant
-#include "icons\waterheateron.h"
-#include "icons\waterheateroff.h"
-#include "icons\lightbulbon.h"
-#include "icons\lightbulboff.h"
-#include "icons\exhaustfanon.h"
-#include "icons\exhaustfanoff.h"
-#include "icons\fanoff.h"
-#include "icons\fanon.h"
-#include "icons\airpurifieron.h"
-#include "icons\airpurifieroff.h"
-#include "icons\plugon.h"
-#include "icons\plugoff.h"
-#include "icons\switchon.h"
-#include "icons\switchoff.h"
-#include "icons\airconditioneron.h"
-#include "icons\airconditioneroff.h"
-#include "icons\warning.h"
-#include "icons\plantWateringlow.h"
-#include "icons\plantWateringok.h"
+#include "icons/waterheateron.h"
+#include "icons/waterheateroff.h"
+#include "icons/lightbulbon.h"
+#include "icons/lightbulboff.h"
+#include "icons/exhaustfanon.h"
+#include "icons/exhaustfanoff.h"
+#include "icons/fanoff.h"
+#include "icons/fanon.h"
+#include "icons/airpurifieron.h"
+#include "icons/airpurifieroff.h"
+#include "icons/plugon.h"
+#include "icons/plugoff.h"
+#include "icons/switchon.h"
+#include "icons/switchoff.h"
+#include "icons/airconditioneron.h"
+#include "icons/airconditioneroff.h"
+#include "icons/warning.h"
+#include "icons/plantWateringlow.h"
+#include "icons/plantWateringok.h"
 
 // sensor icons
-#include "icons\dooropen.h"
-#include "icons\doorclosed.h"
-#include "icons\motionsensoron.h"
-#include "icons\motionsensoroff.h"
-#include "icons\sensorerror.h"
+#include "icons/dooropen.h"
+#include "icons/doorclosed.h"
+#include "icons/motionsensoron.h"
+#include "icons/motionsensoroff.h"
+#include "icons/sensorerror.h"
 
 #define White 0xFF
 #define LightGrey 0xBB
@@ -83,11 +83,6 @@
 #define BOTTOM_TILE_WIDTH      320
 #define BOTTOM_TILE_HEIGHT     90
 
-
-// deep sleep configurations
-long SleepDuration   = 1; // Sleep time in minutes, aligned to the nearest minute boundary, so if 30 will always update at 00 or 30 past the hour
-int  WakeupHour      = 6;  // Wakeup after 06:00 to save battery power
-int  SleepHour       = 23; // Sleep  after 23:00 to save battery power
 
 long StartTime       = 0;
 long SleepTimer      = 0;
@@ -275,7 +270,7 @@ void DrawBottomBar()
     float totalPower  = 0;
     String totalEnergyName;
     String totaPowerName;
-    for (int i = 0; i < (sizeof(haFloatSensors) / sizeof(haFloatSensors[0])); i++){
+    for (int i = 0; i < (sizeof(haFloatSensors) / sizeof(HAEntities)); i++){
         if (haFloatSensors[i].entityType == sensor_type::ENERGYMETER)
         {
             totalEnergy = totalEnergy + getSensorFloatValue(haFloatSensors[i].entityID);
@@ -303,10 +298,10 @@ void DrawBottomBar()
         tiles--;
     }
     
-    for (int i = 0; i < (sizeof(haFloatSensors) / sizeof(haFloatSensors[0])); i++){
+    for (int i = 0; i < (sizeof(haFloatSensors) / sizeof(HAEntities)); i++){
         if (haFloatSensors[i].entityType == sensor_type::TEMP && tiles >= 1)
         {
-            float temp = getSensorAttributeValue(haFloatSensors[i].entityID, "current_temperature").toFloat();
+            float temp = getSensorAttributeValue(haFloatSensors[i].entityID, "temperature").toFloat();
             if (temp == 0)
                 getSensorValue(haFloatSensors[i].entityID).toFloat();
             DrawBottomTile(x, y, String(temp, 1) + "° C", haFloatSensors[i].entityName);
@@ -321,7 +316,7 @@ void DrawSwitchBar()
     setFont(OpenSans9B);
     int x = 3;
     int y = 23;
-    for (int i = 0; i < 12; i++){
+    for (int i = 0; i < (sizeof(haEntities) / sizeof(HAEntities)); i++){
         if (haEntities[i].entityName != "") {
           if (haEntities[i].entityType == entity_type::SWITCH ||
               haEntities[i].entityType == entity_type::LIGHT ||
@@ -354,7 +349,7 @@ void DrawSensorBar()
     setFont(OpenSans9B);
     int x = 3;
     int y = 345;
-    for (int i = 0; i < 8; i++){
+    for (int i = 0; i < (sizeof(haSensors) / sizeof(HAEntities)); i++){
         if (haSensors[i].entityType == sensor_type::DOOR ||
             haSensors[i].entityType == sensor_type::MOTION )
         {
